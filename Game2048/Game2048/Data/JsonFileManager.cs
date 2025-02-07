@@ -16,12 +16,16 @@ namespace Game2048.Data
         private const string DefaultErrorMessage = "Помилка під час читання статистики з файлу! Буде виконано скидання!";
         public static void WriteToJsonFile<T>(string filePath, ObservableCollection<T> players)
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-
-            string jsonString = JsonSerializer.Serialize(players, options);
+            var jsonString = SerializeToJson(players);
+            SaveToFile(filePath, jsonString);
+        }
+        private static string SerializeToJson<T>(ObservableCollection<T> players)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            return JsonSerializer.Serialize(players, options);
+        }
+        private static void SaveToFile(string filePath, string jsonString)
+        {
             File.WriteAllText(filePath, jsonString);
         }
 
