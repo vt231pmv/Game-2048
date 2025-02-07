@@ -46,55 +46,46 @@ namespace Game2048.ViewModels
         #region Operations
         private void Reset()
         {
-            Board = new int[gameBoard.boardSize, gameBoard.boardSize];
-            Score = 0;
+            gameBoard.ResetBoard();
             GenerateRandomNumber();
             GenerateRandomNumber();
-            Update();
+            UpdateView();
         }
         private void GenerateRandomNumber()
         {
-            int row, col;
-            do
-            {
-                row = random.Next(gameBoard.boardSize);
-                col = random.Next(gameBoard.boardSize);
-            } while (gameBoard.board[row, col] != 0);
-
-            gameBoard.board[row, col] = random.Next(100) < 90 ? 2 : 4;
+            gameBoard.AddRandomTile(random);
+            UpdateView();
         }
 
-        private void Update()
+        private void UpdateView()
         {
-            Board = gameBoard.Board;
-            Score = gameBoard.Score;
+            OnPropertyChanged(nameof(Board));
+            OnPropertyChanged(nameof(Score));
         }
         #endregion
 
         #region GameState
         private void CheckGameState()
         {
-            Update();
+            UpdateView();
             if (IsGameOver())
             {
-                MessageBoxResult result = MessageBox.Show("Ви програли! Бажаєте занести себе до списку?", "Кінець", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (result == MessageBoxResult.Yes)
-                {
-                    AddToStatistics();
-                }
-                Reset();
+                HandleGameEnd("Ви програли!");
             }
             else if (IsGameWin())
             {
-                MessageBoxResult result = MessageBox.Show("Ви виграли! Бажаєте занести себе до списку?", "Кінець", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (result == MessageBoxResult.Yes)
-                {
-                    AddToStatistics();
-                }
-                Reset();
+                HandleGameEnd("Ви виграли!");
             }
         }
-
+        private void HandleGameEnd(string message)
+        {
+            MessageBoxResult result = MessageBox.Show($"{message} Бажаєте занести себе до списку?", "Кінець", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (result == MessageBoxResult.Yes)
+            {
+                AddToStatistics();
+            }
+            Reset();
+        }
         public bool IsGameWin()
         {
             for (int row = 0; row < gameBoard.boardSize; row++)
