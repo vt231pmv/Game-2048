@@ -13,6 +13,7 @@ namespace Game2048.Data
 {
     public class JsonFileManager
     {
+        private const string DefaultErrorMessage = "Помилка під час читання статистики з файлу! Буде виконано скидання!";
         public static void WriteToJsonFile<T>(string filePath, ObservableCollection<T> players)
         {
             JsonSerializerOptions options = new()
@@ -62,7 +63,7 @@ namespace Game2048.Data
         }
         private static void ShowReadErrorMessage()
         {
-            MessageBox.Show("Помилка під час читання статистики з файлу!\n Буде виконано скидання!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(DefaultErrorMessage, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
